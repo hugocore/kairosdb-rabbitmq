@@ -17,6 +17,9 @@
         <dependency org="com.rabbitmq" name="amqp-client" rev="3.2.3" />
         <dependency org="org.springframework.amqp" name="spring-rabbit" rev="1.2.1.RELEASE" />
 		<dependency org="org.reflections" name="reflections" rev="0.9.8"/>
+		
+		<!-- KairosDB -->
+		<dependency org="org.kairosdb" name="kairosdb" rev="0.9.4" />
         
     </dependencies>
 </ivy-module>

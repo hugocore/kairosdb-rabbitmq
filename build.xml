@@ -74,10 +74,12 @@
 
 	<target name="dist-local" depends="clean-local, compile">
 		<mkdir dir="${dist.dir}/lib" />
-		<ivy:retrieve sync="true" pattern="${dist.dir}/lib/[artifact]-[revision].[ext]"/>
 		<jar jarfile="${dist.dir}/lib/${module.name}.jar" basedir="${bin.dir}" />
 		<copy file="${basedir}/src/main/resources/${binding.file}" todir="${dist.dir}/conf" />
 		<copy file="${basedir}/src/main/resources/${local.properties}" todir="${dist.dir}/conf" />
+		<copy todir="${dist.dir}/lib">
+			<fileset dir="${basedir}/lib" includes="**" />
+		</copy>
 		<copy todir="${kairosdb.local.dir}">
 			<fileset dir="${dist.dir}" includes="**" />
 		</copy>

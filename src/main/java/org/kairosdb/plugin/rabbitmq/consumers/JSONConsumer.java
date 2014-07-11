@@ -1,14 +1,6 @@
-/*  ┌────────────────────────────────────────────────────────────────────┐
- *  │ RabbitMQToKairosDB                                                 │
- *  ├────────────────────────────────────────────────────────────────────┤
- *  │ Copyright © 2014 Hugo Sequeira (https://github.com/hugocore)       │
- *  ├────────────────────────────────────────────────────────────────────┤
- *  │ Licensed under the MIT license.                                    │
- *  ├────────────────────────────────────────────────────────────────────┤
- *  │ Plugin for KairosDB subscribe to RabbitMQ brokers.                 │
- *  └────────────────────────────────────────────────────────────────────┘
+/**
+ * 
  */
- 
 package org.kairosdb.plugin.rabbitmq.consumers;
 
 import org.json.JSONArray;
@@ -82,9 +74,9 @@ public class JSONConsumer extends AbstractConsumer {
 			if (jsonobj.has(fieldValue)) {
 
 				if (jsonobj.has(fieldTimestamp)) {
-
+					
 					// Gets value and timestamp
-					setValue(jsonobj.getString(fieldValue));
+					setValue(jsonobj.get(fieldValue).toString());
 					setTimestamp(jsonobj.getLong(fieldTimestamp));
 
 					String tagname = "";
@@ -109,9 +101,9 @@ public class JSONConsumer extends AbstractConsumer {
 
 						}
 
-						// Otherwise use the rest of properties of the has tags
 					} else {
 
+						// Otherwise use the rest of properties of the has tags
 						elements = JSONObject.getNames(jsonobj);
 						for (String property : elements) {
 							tagname = property;
