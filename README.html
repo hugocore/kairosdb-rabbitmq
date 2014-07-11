@@ -1,0 +1,359 @@
+<!DOCTYPE h1 PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<head>
+	<title>KairosDB – RabbitMQ plugin</title>
+	<link rel="stylesheet" type="text/css" href="http://stackedit.io/res-min/themes/default.css" />
+</head>
+
+<body style="margin: 20px; text-align: justify;">
+
+<h1 id="kairosdb-rabbitmq-plugin">KairosDB – RabbitMQ plugin</h1>
+
+<p>KairosDB-RabbitMQ is an scalable-ready ad-hoc plugin for the KairosDB time series database that subscribes to RabbitMQ topic exchanges and automatically saves designated time series messages in KairosDB. This plugin is ideally for a cloud environment because you can avoid the latency and resources of having an extra middleware system to transfer messages between your RabbitMQ message bus and KairosDB. In addition, each KairosDB instantiated instances follows the same binding configuration file, enabling the system to scale without creating any more queues and distribute the load in a round-robin manner.</p>
+
+<hr>
+
+<h2 id="usage">Usage</h2>
+
+<h3 id="1-kairosdb">1. KairosDB</h3>
+
+<p>This is a plugin for KairosDB, so obviously you should first obtain KairosDB before using this plugin.</p>
+
+<p>Follow the instructions on their documentation to install KairosDB.</p>
+
+<p><a href="https://code.google.com/p/kairosdb/wiki/GettingStarted">https://code.google.com/p/kairosdb/wiki/GettingStarted</a></p>
+
+<h3 id="2-install">2. Install</h3>
+
+<ol>
+<li><p>Navigate to the location of where you want to have this plugin stored, using the console of your OS.</p></li>
+<li><p>Clone this project to your desktop, using the git clone command:</p>
+
+<p>git clone <a href="https://github.com/">https://github.com/</a>…</p></li>
+</ol>
+
+<h3 id="3-configuration">3. Configuration</h3>
+
+<p>KairosDB-RabbitMQ needs to know a few things to operate properly.</p>
+
+<h4 id="plugin-configuration">Plugin configuration</h4>
+
+<p>Edit the file <code>/conf/kairosdb-rabbitmq.properties</code></p>
+
+<ul>
+<li>Configure the connection to your RabbitMQ broker. E.g.:</li>
+</ul>
+
+<pre class="prettyprint prettyprinted"><code class="language-`"><span class="pln">kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">host </span><span class="pun">=</span><span class="pln"> localhost
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">virtualhost </span><span class="pun">=</span><span class="pln"> </span><span class="pun">/</span><span class="pln">
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">username </span><span class="pun">=</span><span class="pln"> guest
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">password </span><span class="pun">=</span><span class="pln"> guest
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">port </span><span class="pun">=</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pln">
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">connectionTimeout </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pln">
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">requestedChannelMax </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pln">
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">requestedFrameMax </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pln">
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">requestedHeartbeat </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span></code></pre>
+
+<ul>
+<li>Configure the format of your messages, specifying the characteristics of your messages. By default, the plugin is ready to handle JSON and CSV messages. So, for example, for JSON messages, you have to specify what’s the field name for <em>value</em>, <em>timestamp</em> and <em>tags</em>. For CSV messages, you just have to specify what’s the <em>separator</em> for the columns.</li>
+</ul>
+
+<p>Note: if your message does not contain a JSONArray for the <em>tags</em>, the consumer will treat each field of your JSON messages, beside the ones for <em>value</em> and <em>timestamp</em>, as <em>tags</em>.</p>
+
+<blockquote>
+  <h3 id="example">Example</h3>
+  
+  <p>E.g. for JSON messages with a format like this:</p>
+
+<pre><code>{"tags":[{"unit":"cm"},{"timezone":"Europe/Madrid"},{"collectedtimestamp":"1388530860000"}],"value":10,"sourceTimestamp":1388530800000}
+</code></pre>
+  
+  <p>or</p>
+
+<pre><code>{"unit":"cm","timezone":"Europe/Madrid","collectedtimestamp":"1388530860000","value":10,"sourceTimestamp":1388530800000}
+</code></pre>
+  
+  <p>You should have your configuration as:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">
+</span><span class="com">#KairosDB-RabbitMQ message formats</span><span class="pln">
+
+
+</span><span class="com">#the message format to use in case the message has no ContentType defined</span><span class="pln">
+
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">defaultContentType </span><span class="pun">=</span><span class="pln"> JSON
+
+
+</span><span class="com">#JSON messages</span><span class="pln">
+
+
+</span><span class="com">#name of the field for value</span><span class="pln">
+
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">value </span><span class="pun">=</span><span class="pln"> value
+
+</span><span class="com">#name of the field for timestamp</span><span class="pln">
+
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">timestamp </span><span class="pun">=</span><span class="pln"> sourceTimestamp
+
+</span><span class="com">#name of the JSONArray field for tags</span><span class="pln">
+
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">tags </span><span class="pun">=</span><span class="pln"> tags
+
+</span><span class="com">#if message does not contain this JSONArray field use the rest of the root properties as tags</span></code></pre>
+  
+  <h3 id="example-1">Example</h3>
+  
+  <p>E.g. for CSV/TEXT messages with a format like this:</p>
+
+<pre><code>1388530800000,10,unit,cm,timezone,Europe/Berlin,collectedtimestamp,1388530860000
+</code></pre>
+  
+  <p>You should have your configuration as:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">
+</span><span class="com">#CSV/Text messages</span><span class="pln">
+
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">csv</span><span class="pun">.</span><span class="pln">seperator </span><span class="pun">=</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span></code></pre>
+</blockquote>
+
+<h4 id="binding-configuration">Binding configuration</h4>
+
+<p>Edit the file <code>/conf/bindings.json</code></p>
+
+<ul>
+<li>Next you need to define the bindings with your RabbitMQ broker. The plugin needs to know where, what and how to subscribe to your message broker. Thus, you must define which topic <em>exchange</em>’s you want to subscribe to and which <em>queueName</em>’s are bound to them, according to your <em>bindingKey</em>’s. Read the documentation for the <a href="https://www.rabbitmq.com/tutorials/amqp-concepts.html">RabbitMQ AMQP model</a> for more information. </li>
+</ul>
+
+<blockquote>
+  <h3 id="example-2">Example</h3>
+  
+  <p>E.g. let’s imagine you want to have these collection of queues:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="str">"queues"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue1"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueDurable"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"true"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueExclusive"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueAutoDelete"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue2"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueDurable"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"true"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueExclusive"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueAutoDelete"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue3"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueDurable"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"true"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueExclusive"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"queueAutoDelete"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">]</span><span class="pln"> </span></code></pre>
+  
+  <p>And have the following bindings:</p>
+  
+  <ol>
+  <li><p>Subscribe to exchange <strong>exch1</strong> and subscribe to all messages, i.e., using <em>Binding Key</em> as <strong>#</strong>, queueing the messages in queue <br>
+  <strong>queue1</strong>.</p></li>
+  <li><p>Subscribe to exchange <strong>exch2</strong> and subscribe to messages with a <em>Routing Key</em> starting with <strong>color.</strong> , i.e., using <em>Binding Key</em> as <strong>color.#</strong>, queueing the messages in queue <strong>queue2</strong>.</p></li>
+  <li><p>Subscribe to exchange <strong>exch2</strong> and subscribe to messages with a <em>Routing Key</em> starting with <strong>size.</strong> , i.e., using <em>Binding Key</em> as <strong>size.#</strong>, queueing the messages in queue <strong>queue3</strong>.</p></li>
+  </ol>
+  
+  <p>Then you must have a binding configuration as this:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="str">"bindings"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"exchange"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"exch1"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"topic"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeDurable"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"true"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeAutoDelete"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeInternal"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"binds"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"bindingkey"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"#"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue1"</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">]</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"exchange"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"exch2"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"topic"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeDurable"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"true"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeAutoDelete"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"exchangeInternal"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"false"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"binds"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"bindingkey"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"color.#"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue2"</span><span class="pln">
+                </span><span class="pun">},</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"bindingkey"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"size.#"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"queueName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"queue3"</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">]</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">]</span></code></pre>
+</blockquote>
+
+<h3 id="4-deploy">4. Deploy</h3>
+
+<h4 id="manually">Manually</h4>
+
+<p>Copy the contents of <code>dist/</code> to the root location of your KairosDB, respectively:</p>
+
+<p><code>KairosDB-RabbitMQ/dist/conf/</code> to <code>YourKairosDB/conf/</code></p>
+
+<p><code>KairosDB-RabbitMQ/dist/lib/</code> to <code>YourKairosDB/lib/</code></p>
+
+<h4 id="ant">Ant</h4>
+
+<p>If you intend to do some modifications to the plugin or automate the deployment process, you can use the Ant target rules inside the <code>build.xml</code> file to deploy the necessary files in KairosDB folder. Here are the instructions:</p>
+
+<ol>
+<li>Define the <code>kairosdb.local.dir</code> property with the location of your KairosDB instance. E.g.:</li>
+</ol>
+
+<p><code>&lt;property name="kairosdb.local.dir" value="C:\Users\JohnDoe\workspace\kairosdb-local" /&gt;</code></p>
+
+<ol>
+<li>Run the <code>dist-local</code> Ant target to deploy the files into the previously defined location.</li>
+</ol>
+
+<p><code>ant dist-local</code>    </p>
+
+<hr>
+
+<h2 id="documentation">Documentation</h2>
+
+<h3 id="kairosdb-datapoints">KairosDB DataPoints</h3>
+
+<p>The fundamental operation of this plugin is to push time series data from RabbitMQ to KairosDB. Hence, the information saved depends on the content of each message. For that, the plugin needs to know what and where to read these messages and match them to KairosDB system. First, the ‘bindings.json’ configuration file defines where to read these messages. Then, for each message, based on its Content Type, the plugin will interpret the message and read the necessary data, following the ´kairosdb-rabbitmq.properties’ configuration files. Finally, data are saved in a KairosDB metric, named after the Routing Key of the message.</p>
+
+<p>In sum, to push time series data a.k.a. data points to KairosDB using this plugin you must provide:</p>
+
+<ol>
+<li>Routing Key for each RMQ Message <br>
+<ul><li>Used as Metric Name in KairosDB</li></ul></li>
+<li>Content Type for each RMQ Message <br>
+<ul><li>Decides which consumer to be use (JSON, CVS, etc.)</li></ul></li>
+<li>TimeStamp inside the payload of each RMQ Message (Long, Milliseconds since 1/1/1970 UTC) <br>
+<ul><li>Time Stamp of the new Data Point</li></ul></li>
+<li>Value inside the payload of each RMQ Message (Long or Double, e.g., 523 or 132.45) <br>
+<ul><li>Value of the new Data Point</li></ul></li>
+</ol>
+
+<p>Optionally you can provide:</p>
+
+<ol>
+<li>A list of tags inside the payload of each RMQ Message (tag is a pair of elements) <br>
+<ul><li>Tags of the new Data Point</li></ul></li>
+</ol>
+
+<p>For more information consult the KairosDB documentation <br>
+<a href="https://code.google.com/p/kairosdb/wiki/AddDataPoints">https://code.google.com/p/kairosdb/wiki/AddDataPoints</a></p>
+
+<blockquote>
+  <h3 id="example-3">Example</h3>
+  
+  <p>Let’s imagine we want to push these RMQ time series data to KairosDB:</p>
+  
+  <p><strong>Queued Message inside RMQ</strong></p>
+  
+  <p>Rounting Key: </p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">size</span><span class="pun">.</span><span class="pln">h1</span><span class="pun">.</span><span class="pln">title</span></code></pre>
+  
+  <p>Properties:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">content_type </span><span class="pun">=</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json</span></code></pre>
+  
+  <p>PayLoad: </p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="str">"tags"</span><span class="pun">:[{</span><span class="str">"unit"</span><span class="pun">:</span><span class="str">"cm"</span><span class="pun">},{</span><span class="str">"timezone"</span><span class="pun">:</span><span class="str">"Europe/Madrid"</span><span class="pun">},{</span><span class="str">"collectedtimestamp"</span><span class="pun">:</span><span class="str">"1388530860000"</span><span class="pun">}],</span><span class="str">"value"</span><span class="pun">:</span><span class="lit">10</span><span class="pun">,</span><span class="str">"sourceTimestamp"</span><span class="pun">:</span><span class="lit">1388530800000</span><span class="pun">}</span></code></pre>
+  
+  <p><strong>The plugin will process the message as</strong></p>
+  
+  <p>Consumer: </p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="typ">Class</span><span class="pun">:</span><span class="pln"> 
+</span><span class="typ">JSONConsumer</span><span class="pun">.</span><span class="pln">java </span><span class="pun">(</span><span class="pln">because content_type contains </span><span class="str">'json'</span><span class="pun">)</span><span class="pln">
+
+</span><span class="typ">Configurations</span><span class="pun">:</span><span class="pln"> 
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">value
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">timestamp
+kairosdb</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">rabbitmq</span><span class="pun">.</span><span class="pln">jsonfield</span><span class="pun">.</span><span class="pln">tags</span></code></pre>
+  
+  <p><strong>This will be saved in KairosDB as</strong></p>
+  
+  <p>Metric Name: </p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">name</span><span class="pun">=</span><span class="pln">size</span><span class="pun">.</span><span class="pln">h1</span><span class="pun">.</span><span class="pln">title</span></code></pre>
+  
+  <p>Data Point:</p>
+  
+  <pre class="prettyprint prettyprinted"><code><span class="pln">timestamp</span><span class="pun">=</span><span class="lit">1388530800000</span><span class="pln">
+value</span><span class="pun">=</span><span class="lit">10</span><span class="pln">
+tags</span><span class="pun">=[{</span><span class="str">"unit"</span><span class="pun">:</span><span class="str">"cm"</span><span class="pun">},{</span><span class="str">"timezone"</span><span class="pun">:</span><span class="str">"Europe/Madrid"</span><span class="pun">},{</span><span class="str">"collectedtimestamp"</span><span class="pun">:</span><span class="str">"1388530860000"</span><span class="pun">}]</span></code></pre>
+</blockquote><div class="se-section-delimiter"></div>
+
+<h3 id="rabbitmq-messages">RabbitMQ Messages</h3>
+
+<p>The plugin starts in the background, in a separate thread, as soon as KairosDB starts. From then it stays listening for messages indefinitely, according to your binding configuration. Since it subscribe to these messages automatically, it needs to know how to handle and read these messages to collect its <em>value</em>, <em>timestamp</em> and <em>tags</em> to be saved in yours KairosDB.</p>
+
+<p>Out of the box, KairosDB-RabbitMQ comes ready to handle these types of messages:</p>
+
+<h4 id="json-messages">JSON Messages</h4>
+
+<p>In case you want to subscribe to JSON messages, the <em>content_type</em> property of each message should contain the keyword <em>json</em> and it must follow one the following formats (no particularly order):</p>
+
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"&lt;kairosdb.plugin.rabbitmq.jsonfield.tags&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"&lt;tag key&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;tag value&gt;"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"&lt;tag key&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;tag value&gt;"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">...</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"&lt;kairosdb.plugin.rabbitmq.jsonfield.value&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;Value (either a Long (eg. 10) or a Double (eg. 10.0))&gt;"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"&lt;kairosdb.plugin.rabbitmq.jsonfield.timestamp&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;Timestamp (milliseconds)&gt;"</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+
+<p>or</p>
+
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"&lt;kairosdb.plugin.rabbitmq.jsonfield.value&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;Value (either a Long (eg. 10) or a Double (eg. 10.0))&gt;"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"&lt;kairosdb.plugin.rabbitmq.jsonfield.timestamp&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;Timestamp (milliseconds)&gt;"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"&lt;tag.key&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;tag.value&gt;"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"&lt;tag.key&gt;"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&lt;tag.value&gt;"</span><span class="pun">,</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+
+<h4 id="csvtext-messages">CSV/TEXT Messages</h4>
+
+<p>In case you want to subscribe to CSV or any Text messages, the <em>content_type</em> property of each message should contain the keyword <em>csv</em>, <em>text</em> or <em>txt</em> and you need to follow this format:</p>
+
+<pre class="prettyprint prettyprinted"><code><span class="tag">&lt;Timestamp</span><span class="pln"> (</span><span class="atn">milliseconds</span><span class="pln">)</span><span class="tag">&gt;</span><span class="pln">{sep}</span><span class="tag">&lt;Value</span><span class="pln"> (</span><span class="atn">either</span><span class="pln"> </span><span class="atn">a</span><span class="pln"> </span><span class="atn">Long</span><span class="pln"> (</span><span class="atn">eg</span><span class="pln">. 10) </span><span class="atn">or</span><span class="pln"> </span><span class="atn">a</span><span class="pln"> </span><span class="atn">Double</span><span class="pln"> (</span><span class="atn">eg</span><span class="pln">. 10.0))</span><span class="tag">&gt;</span><span class="pln">{sep}</span><span class="tag">&lt;tag</span><span class="pln"> </span><span class="atn">key</span><span class="tag">&gt;</span><span class="pln">{sep}</span><span class="tag">&lt;tag</span><span class="pln"> </span><span class="atn">value</span><span class="tag">&gt;</span><span class="pln">{sep}</span><span class="tag">&lt;tag</span><span class="pln"> </span><span class="atn">key</span><span class="tag">&gt;</span><span class="pln">{sep}</span><span class="tag">&lt;tag</span><span class="pln"> </span><span class="atn">value</span><span class="tag">&gt;</span><span class="pln">{sep}...</span></code></pre>
+
+<p>Notes:<br>
+1. <em>{sep}</em> is the String defined in the <code>kairosdb.plugin.rabbitmq.csv.seperator</code> property. <br>
+2. In case you are using <em>Double</em>’s, make sure that your decimal seperator is not equal to <code>kairosdb.plugin.rabbitmq.csv.seperator</code> property.</p>
+
+<h4 id="spring-amqp-json-messages">Spring AMQP / JSON Messages</h4>
+
+<p>In case you are using the Spring AMQP project, the KairosDB-RabbitMQ plugin is ready to read those messages, using  <em>content_type</em> as <em>application/octet-stream</em>.</p>
+
+<p>Since the Spring AMQP framework encapsulates your messages in Java <em>Message</em> objects, these have to be decoded before reading its content. Upon receiving these messages, the plugin cast them to <em>Message</em> objects and extract their body.</p>
+
+<p>For now, their content must be JSON. Further work involves having the possibility to subscribe to these messages, but treat them not only as JSON messages, but also as CSV/TEXT messages per example.</p>
+
+<h3 id="conceptual-architecture">Conceptual Architecture</h3>
+
+<p><img src="architecture.png" alt="Image" title="" style="width: 100%"></p>
+
+<h3 id="software-architecture">Software Architecture</h3>
+
+<p><img src="uml.png" alt="Image" title="" style="width: 100%"></p>
+
+</body>

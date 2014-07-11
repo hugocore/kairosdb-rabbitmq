@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=kairos-rabbitmq&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry kind="lib" path="tools/commons-compress-1.4.1.jar"/>
+	<classpathentry kind="lib" path="tools/groovy-all-1.6.3.jar"/>
+	<classpathentry kind="lib" path="tools/ivy-2.3.0.jar"/>
+	<classpathentry kind="lib" path="tools/redline-1.1.10.jar"/>
+	<classpathentry kind="lib" path="tools/tablesaw-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/kairosdb.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

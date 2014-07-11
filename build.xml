@@ -1,0 +1,86 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="RabbitMQToKairosDB" basedir="." default="dist-local">
+
+	<!-- 
+	   Properties  
+	-->
+	<property name="kairosdb.local.dir" value="C:\Users\JohnDoe\workspace\kairosdb-local" />
+	
+	<!-- 
+	   Deployment properties  
+	-->
+	<property name="ivy.install.version" value="2.3.0" />
+	<property name="module.name" value="kairosdb-rabbitmq" />
+	<property name="binding.file" value="bindings.json" />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="bin.dir" value="${basedir}/bin" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="local.properties" value="${module.name}-local.properties" />
+
+	<path id="lib.classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+	
+	<!-- 
+       Ivy  
+    -->
+	<condition property="ivy.home" value="${env.IVY_HOME}">
+		<isset property="env.IVY_HOME" />
+	</condition>
+	<property name="ivy.home" value="${user.home}/.ant" />
+	<property name="ivy.jar.dir" value="${ivy.home}/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+	<target name="install-ivy" description="Used to install the Ivy task jar in Ant lib folder.">
+		<mkdir dir="${ivy.jar.dir}" />
+		<get ignoreerrors="true" src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="init-ivy" depends="install-ivy">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve" depends="init-ivy" description="Resolve dependencies and construct ClassPath with jars cached locations.">
+		<ivy:resolve />
+		<ivy:cachepath pathid="ivy.classpath" />
+	</target>
+
+	<!-- 
+       Common targets  
+    -->
+	<target name="init" depends="resolve">
+		<mkdir dir="${bin.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" fork="true">
+			<classpath refid="ivy.classpath" />
+			<classpath refid="lib.classpath" />
+		</javac>
+	</target>
+
+	<!-- 
+       Local development targets  
+    -->
+	<target name="clean-local">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<delete file="${kairosdb.local.dir}/lib/${module.name}.jar" />
+		<delete file="${kairosdb.local.dir}/conf/${local.properties}" />
+	</target>
+
+	<target name="dist-local" depends="clean-local, compile">
+		<mkdir dir="${dist.dir}/lib" />
+		<ivy:retrieve sync="true" pattern="${dist.dir}/lib/[artifact]-[revision].[ext]"/>
+		<jar jarfile="${dist.dir}/lib/${module.name}.jar" basedir="${bin.dir}" />
+		<copy file="${basedir}/src/main/resources/${binding.file}" todir="${dist.dir}/conf" />
+		<copy file="${basedir}/src/main/resources/${local.properties}" todir="${dist.dir}/conf" />
+		<copy todir="${kairosdb.local.dir}">
+			<fileset dir="${dist.dir}" includes="**" />
+		</copy>
+	</target>
+
+</project>

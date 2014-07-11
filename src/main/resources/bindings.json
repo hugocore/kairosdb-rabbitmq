@@ -1,0 +1,54 @@
+{
+    "bindings": [
+        {
+            "exchange": "exch1",
+            "exchangeType": "topic",
+            "exchangeDurable" : "true",
+            "exchangeAutoDelete" : "false",
+            "exchangeInternal" : "false",
+            "binds": [
+                {
+                    "bindingkey": "#",
+                    "queueName": "queue1"
+                }
+            ]
+        },
+        {
+            "exchange": "exch2",
+            "exchangeType": "topic",
+            "exchangeDurable" : "true",
+            "exchangeAutoDelete" : "false",
+            "exchangeInternal" : "false",
+            "binds": [
+                {
+                    "bindingkey": "color.#",
+                    "queueName": "queue2"
+                },
+                {
+                    "bindingkey": "size.#",
+                    "queueName": "queue3"
+                }
+            ]
+        }
+    ],
+    "queues": [
+        {
+            "queueName": "queue1",
+            "queueDurable": "true",
+            "queueExclusive": "false",
+            "queueAutoDelete": "false"
+        },
+        {
+            "queueName": "queue2",
+            "queueDurable": "true",
+            "queueExclusive": "false",
+            "queueAutoDelete": "false"
+        },
+        {
+            "queueName": "queue3",
+            "queueDurable": "true",
+            "queueExclusive": "false",
+            "queueAutoDelete": "false"
+        }
+    ]
+}
