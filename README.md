@@ -20,7 +20,7 @@ https://code.google.com/p/kairosdb/wiki/GettingStarted
 
 2. Clone this project to your desktop, using the git clone command:
 
-    git clone https://github.com/...
+    git clone https://github.com/hugocore/kairosdb-rabbitmq.git
 
 ### 3. Configuration ###
 
@@ -164,25 +164,29 @@ Then you must have a binding configuration as this:
 
 ### 4. Deploy ###
 
-#### Manually ####
-
 Copy the contents of ``dist/`` to the root location of your KairosDB, respectively:
 
 ``KairosDB-RabbitMQ/dist/conf/`` to ``YourKairosDB/conf/``
 
 ``KairosDB-RabbitMQ/dist/lib/`` to ``YourKairosDB/lib/``
- 
+
+----------
+
+## Development ##
+
 #### Ant ####
 
-If you intend to do some modifications to the plugin or automate the deployment process, you can use the Ant target rules inside the ``build.xml`` file to deploy the necessary files in KairosDB folder. Here are the instructions:
+If you intend to do some modifications to the plugin or automate the deployment process, you can use the Ant target rules of ``build.xml`` to deploy the necessary files into your KairosDB instance folder. Here are the instructions:
 
-1. Define the ``kairosdb.local.dir`` property with the location of your KairosDB instance. E.g.:
+1. Perform the configurations changes to the files at ```/src/main/resources/``` instead.
+
+2. Open ``build.xml`` and define the ``kairosdb.local.dir`` property with the location of your KairosDB instance. E.g.:
 
 `<property name="kairosdb.local.dir" value="C:\Users\JohnDoe\workspace\kairosdb-local" />`
 
-2. Run the ``dist-local`` Ant target to deploy the files into the previously defined location.
+3. Run the ``dist-local`` Ant target to deploy the files into the previously defined location.
 
-`ant dist-local`    
+`ant dist-local`
 
 ----------
 
