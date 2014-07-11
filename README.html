@@ -9,7 +9,7 @@
 
 <h1 id="kairosdb-rabbitmq-plugin">KairosDB – RabbitMQ plugin</h1>
 
-<p>KairosDB-RabbitMQ is an scalable-ready ad-hoc plugin for the KairosDB time series database that subscribes to RabbitMQ topic exchanges and automatically saves designated time series messages in KairosDB. This plugin is ideally for a cloud environment because you can avoid the latency and resources of having an extra middleware system to transfer messages between your RabbitMQ message bus and KairosDB. In addition, each KairosDB instantiated instances follows the same binding configuration file, enabling the system to scale without creating any more queues and distribute the load in a round-robin manner.</p>
+<p>KairosDB-RabbitMQ is an scalable-ready ad-hoc plugin for the KairosDB time series database that subscribes to RabbitMQ topic exchanges and automatically saves designated time series messages in KairosDB. This plugin is ideal for a cloud environment to avoid the latency, maintenance and resources of an extra middleware system to transfer messages between RabbitMQ and KairosDB clusters. In addition, each KairosDB instance with this plugin follows the same binding configuration and thus, when the KairosDB cluster scales horizontally, the load is distributed in a round-robin manner per each plugin instance without creating extra queues in the RabbitMQ cluster.</p>
 
 <hr>
 

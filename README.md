@@ -1,6 +1,6 @@
 # KairosDB – RabbitMQ plugin
 
-KairosDB-RabbitMQ is an scalable-ready ad-hoc plugin for the KairosDB time series database that subscribes to RabbitMQ topic exchanges and automatically saves designated time series messages in KairosDB. This plugin is ideally for a cloud environment because you can avoid the latency and resources of having an extra middleware system to transfer messages between your RabbitMQ message bus and KairosDB. In addition, each KairosDB instantiated instances follows the same binding configuration file, enabling the system to scale without creating any more queues and distribute the load in a round-robin manner.
+KairosDB-RabbitMQ is an scalable-ready ad-hoc plugin for the KairosDB time series database that subscribes to RabbitMQ topic exchanges and automatically saves designated time series messages in KairosDB. This plugin is ideal for a cloud environment to avoid the latency, maintenance and resources of an extra middleware system to transfer messages between RabbitMQ and KairosDB clusters. In addition, each KairosDB instance with this plugin follows the same binding configuration and thus, when the KairosDB cluster scales horizontally, the load is distributed in a round-robin manner per each plugin instance without creating extra queues in the RabbitMQ cluster.
 
 ----------
 
@@ -46,6 +46,8 @@ kairosdb.plugin.rabbitmq.requestedHeartbeat = 0`
 
 Note: if your message does not contain a JSONArray for the *tags*, the consumer will treat each field of your JSON messages, beside the ones for *value* and *timestamp*, as *tags*.
 
+###### Example
+
 E.g. for JSON messages with a format like this:
 
     {"tags":[{"unit":"cm"},{"timezone":"Europe/Madrid"},{"collectedtimestamp":"1388530860000"}],"value":10,"sourceTimestamp":1388530800000}
@@ -67,6 +69,8 @@ You should have your configuration as:
     #name of the JSONArray field for tags
     kairosdb.plugin.rabbitmq.jsonfield.tags = tags
     #if message does not contain this JSONArray field use the rest of the root properties as tags
+	
+###### Example
 
 E.g. for CSV/TEXT messages with a format like this:
 
@@ -85,6 +89,8 @@ Edit the file ```/conf/bindings.json```
 
  - Next you need to define the bindings with your RabbitMQ broker. The plugin needs to know where, what and how to subscribe to your message broker. Thus, you must define which topic *exchange*’s you want to subscribe to and which *queueName*’s are bound to them, according to your *bindingKey*’s. Read the documentation for the [RabbitMQ AMQP model](https://www.rabbitmq.com/tutorials/amqp-concepts.html) for more information. 
 
+###### Example
+ 
 E.g. let's imagine you want to have these queues:
 
 ```
@@ -198,27 +204,37 @@ Optionally you can provide:
 For more information consult the KairosDB documentation
 https://code.google.com/p/kairosdb/wiki/AddDataPoints
 
+###### Example
+
 Eg. Let’s imagine we want to push these RMQ time series data to KairosDB:
 
-Queued Message inside RMQ
+**Queued message inside RMQ:**
 
+```
 Rounting Key:
-```size.h1.title```
+size.h1.title
 
 Properties: 
-```content_type = application/json```
+content_type = application/json
 
 PayLoad:
-```{"tags":[{"unit":"cm"},{"timezone":"Europe/Madrid"},{"collectedtimestamp":"1388530860000"}],"value":10,"sourceTimestamp":1388530800000}```
+{"tags":[{"unit":"cm"},{"timezone":"Europe/Madrid"},{"collectedtimestamp":"1388530860000"}],"value":10,"sourceTimestamp":1388530800000}
+```
 
-This will be consumed as
+**This will be consumed as:**
 
+```
 Metric Name:
-```size.h1.title```
+size.h1.title
 
 Consumer:
-```Class=JSONConsumer.java```
-```Properties Used=kairosdb.plugin.rabbitmq.jsonfield.value, kairosdb.plugin.rabbitmq.jsonfield.timestamp, kairosdb.plugin.rabbitmq.jsonfield.tags```
+Class = JSONConsumer.java
+Properties in use = kairosdb.plugin.rabbitmq.jsonfield.value, kairosdb.plugin.rabbitmq.jsonfield.timestamp, kairosdb.plugin.rabbitmq.jsonfield.tags
+
+Saved as:
+(put <metric name> <time stamp> <value> <tag> <tag>... /n)
+put size.h1.title 1388530800000 10 unit cm timezone Europe/Madrid collectedtimestamp 1388530860000
+```
 
 ### RabbitMQ Messages ###
 
