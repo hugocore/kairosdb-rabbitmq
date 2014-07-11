@@ -28,11 +28,12 @@ KairosDB-RabbitMQ needs to know a few things to operate properly.
 
 #### Plugin configuration ###
 
-Edit the file ```/conf/kairosdb-rabbitmq.properties```
+Edit the file ```/dist/conf/kairosdb-rabbitmq.properties```
 
  - Configure the connection to your RabbitMQ broker. E.g.:
 
-`kairosdb.plugin.rabbitmq.host = localhost
+```
+kairosdb.plugin.rabbitmq.host = localhost
 kairosdb.plugin.rabbitmq.virtualhost = /
 kairosdb.plugin.rabbitmq.username = guest
 kairosdb.plugin.rabbitmq.password = guest
@@ -40,7 +41,8 @@ kairosdb.plugin.rabbitmq.port = -1
 kairosdb.plugin.rabbitmq.connectionTimeout = 0
 kairosdb.plugin.rabbitmq.requestedChannelMax = 0
 kairosdb.plugin.rabbitmq.requestedFrameMax = 0
-kairosdb.plugin.rabbitmq.requestedHeartbeat = 0`
+kairosdb.plugin.rabbitmq.requestedHeartbeat = 0
+```
 
  - Configure the format of your messages, specifying the characteristics of your messages. By default, the plugin is ready to handle JSON and CSV messages. So, for example, for JSON messages, you have to specify what’s the field name for *value*, *timestamp* and *tags*. For CSV messages, you just have to specify what’s the *separator* for the columns.
 
@@ -85,7 +87,7 @@ kairosdb.plugin.rabbitmq.csv.seperator = ,
 
 #### Binding configuration ###
 
-Edit the file ```/conf/bindings.json```
+Edit the file ```/dist/conf/bindings.json```
 
  - Next you need to define the bindings with your RabbitMQ broker. The plugin needs to know where, what and how to subscribe to your message broker. Thus, you must define which topic *exchange*’s you want to subscribe to and which *queueName*’s are bound to them, according to your *bindingKey*’s. Read the documentation for the [RabbitMQ AMQP model](https://www.rabbitmq.com/tutorials/amqp-concepts.html) for more information. 
 
