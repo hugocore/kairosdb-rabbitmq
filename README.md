@@ -16,9 +16,7 @@ https://code.google.com/p/kairosdb/wiki/GettingStarted
 
 ### 2. Install ###
 
-1. Navigate to the location of where you want to have this plugin stored, using the console of your OS.
-
-2. Clone this project to your desktop, using the git clone command:
+1. Clone this project to a location in your desktop, using the git clone command:
 
     git clone https://github.com/hugocore/kairosdb-rabbitmq.git
 
@@ -28,9 +26,9 @@ KairosDB-RabbitMQ needs to know a few things to operate properly.
 
 #### Plugin configuration ###
 
-Edit the file ```/dist/conf/kairosdb-rabbitmq.properties```
+1. Edit the file ```/dist/conf/kairosdb-rabbitmq.properties```
 
- - Configure the connection to your RabbitMQ broker. E.g.:
+- Configure the connection to your RabbitMQ broker. E.g.:
 
 ```
 kairosdb.plugin.rabbitmq.host = localhost
@@ -87,9 +85,9 @@ kairosdb.plugin.rabbitmq.csv.seperator = ,
 
 #### Binding configuration ###
 
-Edit the file ```/dist/conf/bindings.json```
+2. Edit the file ```/dist/conf/bindings.json```
 
- - Next you need to define the bindings with your RabbitMQ broker. The plugin needs to know where, what and how to subscribe to your message broker. Thus, you must define which topic *exchange*’s you want to subscribe to and which *queueName*’s are bound to them, according to your *bindingKey*’s. Read the documentation for the [RabbitMQ AMQP model](https://www.rabbitmq.com/tutorials/amqp-concepts.html) for more information. 
+- Next you need to define the bindings with your RabbitMQ broker. The plugin needs to know where, what and how to subscribe to your message broker. Thus, you must define which topic *exchange*’s you want to subscribe to and which *queueName*’s are bound to them, according to your *bindingKey*’s. Read the documentation for the [RabbitMQ AMQP model](https://www.rabbitmq.com/tutorials/amqp-concepts.html) for more information. 
 
 ###### Example
  
