@@ -19,7 +19,7 @@
 		<dependency org="org.reflections" name="reflections" rev="0.9.8"/>
 		
 		<!-- KairosDB -->
-		<dependency org="org.kairosdb" name="kairosdb" rev="0.9.4" />
+		<dependency org="org.kairosdb" name="kairosdb" rev="0.9.4-5" />
         
     </dependencies>
 </ivy-module>
