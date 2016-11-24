@@ -1,9 +1,9 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="RabbitMQToKairosDB" basedir="." default="dist-local">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="kairos-rabbitmq" basedir="." default="dist-local">
 
 	<!-- 
 	   Properties  
 	-->
-	<property name="kairosdb.local.dir" value="C:\Users\JohnDoe\workspace\kairosdb-local" />
+	<property name="kairosdb.local.dir" value="../kairosdb-local" />
 	
 	<!-- 
 	   Deployment properties  
@@ -56,7 +56,7 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src.dir}" destdir="${bin.dir}" fork="true">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" encoding="UTF-8" fork="true">
 			<classpath refid="ivy.classpath" />
 			<classpath refid="lib.classpath" />
 		</javac>

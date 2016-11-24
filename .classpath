@@ -11,6 +11,17 @@
 	<classpathentry kind="lib" path="tools/ivy-2.3.0.jar"/>
 	<classpathentry kind="lib" path="tools/redline-1.1.10.jar"/>
 	<classpathentry kind="lib" path="tools/tablesaw-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/kairosdb.jar"/>
+	<classpathentry kind="lib" path="lib/kairosdb-1.1.2-1.jar"/>
+	<classpathentry kind="lib" path="lib/org.json-chargebee-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jul-to-slf4j-1.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/guava-19.0.jar"/>
+	<classpathentry kind="lib" path="lib/reflections-0.9.10.jar"/>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.20.jar"/>
+	<classpathentry kind="lib" path="lib/amqp-client-3.6.6.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject-1.jar"/>
+	<classpathentry kind="lib" path="lib/spring-amqp-1.6.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
