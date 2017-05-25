@@ -5,21 +5,23 @@
     </configurations>
     <dependencies>
     
-        <!-- Basic dependencies -->
-        <dependency org="com.google.inject.extensions" name="guice-servlet" rev="3.0" />
+        <!-- Basic dependencies (already included in KairosDB) -->
+        <dependency org="com.google.inject" name="guice" rev="3.0" />
         <dependency org="org.slf4j" name="jul-to-slf4j" rev="1.7.2" />
-        <dependency org="org.apache.commons" name="commons-math3" rev="3.2" />
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.20" />
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.1" />
 		<dependency org="commons-io" name="commons-io" rev="2.4" />
         <dependency org="org.json" name="org.json" rev="chargebee-1.0" />
-        <dependency org="com.google.guava" name="guava" rev="14.0" />
+        <dependency org="com.google.guava" name="guava" rev="19.0" />
+        <dependency org="javax.inject" name="javax.inject" rev="1" />
         
         <!-- Custom dependencies -->
-        <dependency org="com.rabbitmq" name="amqp-client" rev="3.2.3" />
-        <dependency org="org.springframework.amqp" name="spring-rabbit" rev="1.2.1.RELEASE" />
-		<dependency org="org.reflections" name="reflections" rev="0.9.8"/>
+        <dependency org="com.rabbitmq" name="amqp-client" rev="3.6.6" />
+        <dependency org="org.springframework.amqp" name="spring-amqp" rev="1.6.5.RELEASE" />
+		<dependency org="org.reflections" name="reflections" rev="0.9.10"/>
 		
 		<!-- KairosDB -->
-		<dependency org="org.kairosdb" name="kairosdb" rev="0.9.4-5" />
+		<dependency org="org.kairosdb" name="kairosdb" rev="1.1.2-1" />
         
     </dependencies>
 </ivy-module>
